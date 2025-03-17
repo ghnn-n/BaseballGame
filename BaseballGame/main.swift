@@ -8,4 +8,3 @@
 var game = BaseballGame()
 
 game.play()
-

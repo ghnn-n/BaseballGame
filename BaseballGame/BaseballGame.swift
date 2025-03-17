@@ -10,8 +10,10 @@ struct BaseballGame {
     mutating func setCorrect() -> [Int] {   // 정답을 생성하는 메서드
         var correct: [Int] = []
         
+        correct.append(Int.random(in: 1...9))   // 첫 번째 숫자는 0이 될 수 없음
+        
         while correct.count < 3 {               // correct에 숫자가 3개 담길 때까지
-            let num = Int.random(in: 1...9)     // 1~9까지 중 랜덤한 숫자를 생성
+            let num = Int.random(in: 0...9)     // 0~9까지 중 랜덤한 숫자를 생성
             if !correct.contains(num) {         // correct에 해당 숫자가 없으면
                 correct.append(num)             // append
             }
