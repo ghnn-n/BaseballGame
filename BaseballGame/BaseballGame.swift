@@ -53,8 +53,8 @@ struct BaseballGame {
                 continue
             }
             
-            guard !input.contains("0") else {   // 예외처리: 입력 값에 0이 포함되는지 체크
-                print("0은 입력할 수 없습니다. ")
+            guard inputArray[0] != 0 else {   // 예외처리: 입력 값 첫 번째가 0인지 체크
+                print("0은 첫 번째 자리에 올 수 없습니다. ")
                 continue
             }
             
