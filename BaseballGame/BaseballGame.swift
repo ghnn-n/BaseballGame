@@ -8,6 +8,10 @@ import Foundation
 
 struct BaseballGame {
     var isSolved = true        // 유저가 정답을 맞췄는지 여부
+    var score: [String] = []
+    
+    var numberOfGames = 0       // 몇 번째 게임인지 기록할 변수
+    var numberOfTries = 0       // 몇 번째 시도 중인지 기록할 변수
     
     mutating func setCorrect() -> [Int] {   // 정답을 생성하는 메서드
         var correct: [Int] = []
@@ -32,7 +36,7 @@ struct BaseballGame {
         }
     }
     
-    mutating func gameStart() {
+    mutating func play() {
         while isSolved {
             print("원하는 번호를 입력해주세요. \n"
             + "1. 게임 시작  2. 게임 기록  3. 게임 설명  4. 종료")
@@ -42,15 +46,19 @@ struct BaseballGame {
             switch getNumber {
             case "1":
                 isSolved = false
+                numberOfGames += 1      // 시작을 누르면 게임 횟수 증가
+                gamePlay()
             case "2":
-                print("history")
+                for i in score {
+                    print(i)
+                }
             case "3":
                 print("정답은 0~9까지의 수 중 겹치지 않는 세 자리의 숫자입니다. \n"
                       + "정답은 0으로 시작할 수 없습니다. \n"
                       + "입력하신 숫자 중 맞는 숫자는 strike, \n"
                       + "정답에 포함되긴 하지만 위치가 안 맞는 경우는 ball로 표시합니다. ")
             case "4":
-                return
+                isSolved = false
             default:
                 print("다시 입력하세요. ")
                 continue
@@ -58,18 +66,19 @@ struct BaseballGame {
         }
     }
     
-    mutating func play() {
+    mutating func gamePlay() {
         let correct = setCorrect()  // 정답 생성
         
-        var strike = 0
-        var ball = 0
-        
-        gameStart()
+        // 게임 시작
+        print("게임을 시작합니다. 세 자리 숫자를 입력하세요. \n"
+              + "게임을 끝내고 싶으시면 [exit]을 입력하세요")
         
         while !isSolved {           // 유저가 답을 맞추지 못하면(false이면) 반복
-            print("게임을 시작합니다. 세 자리 숫자를 입력하세요. \n"
-                  + "게임을 끝내고 싶으시면 [exit]을 입력하세요")
             print(correct)              // 테스트를 위해 정답을 알고 시작함(실제 게임에선 주석처리)
+            
+            var strike = 0
+            var ball = 0
+            
             let input = readLine() ?? ""    // 유저의 입력값
             let inputArray: [Int] = input.map { Int(String($0)) ?? 0 }  // 유저의 입력값을 Int 배열로 반환
             
@@ -106,11 +115,13 @@ struct BaseballGame {
                 print("Nothing")
             } else {                                // 맞춘 게 있으면 힌트 출력
                 print("\(strike) strike, \(ball) ball")
-                strike = 0
-                ball = 0
             }
+            
+            numberOfTries += 1      // 시도 횟수 1 증가
         }
         
-        gameStart()
+        score.append("\(numberOfGames)번째 게임: \(numberOfTries)번 시도")
+        numberOfTries = 0
+        play()             // 안내 문구 재 출력
     }
 }
