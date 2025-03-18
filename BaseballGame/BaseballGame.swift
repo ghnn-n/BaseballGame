@@ -7,6 +7,8 @@
 import Foundation
 
 struct BaseballGame {
+    var isSolved = true        // 유저가 정답을 맞췄는지 여부
+    
     mutating func setCorrect() -> [Int] {   // 정답을 생성하는 메서드
         var correct: [Int] = []
         
@@ -30,22 +32,48 @@ struct BaseballGame {
         }
     }
     
+    mutating func gameStart() {
+        while isSolved {
+            print("원하는 번호를 입력해주세요. \n"
+            + "1. 게임 시작  2. 게임 기록  3. 게임 설명  4. 종료")
+            
+            let getNumber = readLine() ?? ""
+            
+            switch getNumber {
+            case "1":
+                isSolved = false
+            case "2":
+                print("history")
+            case "3":
+                print("정답은 0~9까지의 수 중 겹치지 않는 세 자리의 숫자입니다. \n"
+                      + "정답은 0으로 시작할 수 없습니다. \n"
+                      + "입력하신 숫자 중 맞는 숫자는 strike, \n"
+                      + "정답에 포함되긴 하지만 위치가 안 맞는 경우는 ball로 표시합니다. ")
+            case "4":
+                return
+            default:
+                print("다시 입력하세요. ")
+                continue
+            }
+        }
+    }
+    
     mutating func play() {
         let correct = setCorrect()  // 정답 생성
-        var isSolved = false        // 유저가 정답을 맞췄는지 여부
         
         var strike = 0
         var ball = 0
         
-        print("야구게임을 시작합니다. ")
-        print("0을 포함하지 않은 3자리의 숫자를 입력하세요. ")
-        print("strike: 정답인 숫자가 정확한 위치에 있을 경우")
-        print("ball: 정답인 숫자를 포함하고 있지만 정확한 위치가 아닐 경우")
-        print(correct)              // 테스트를 위해 정답을 알고 시작함(실제 게임에선 주석처리)
+        gameStart()
         
         while !isSolved {           // 유저가 답을 맞추지 못하면(false이면) 반복
+            print("게임을 시작합니다. 세 자리 숫자를 입력하세요. \n"
+                  + "게임을 끝내고 싶으시면 [exit]을 입력하세요")
+            print(correct)              // 테스트를 위해 정답을 알고 시작함(실제 게임에선 주석처리)
             let input = readLine() ?? ""    // 유저의 입력값
             let inputArray: [Int] = input.map { Int(String($0)) ?? 0 }  // 유저의 입력값을 Int 배열로 반환
+            
+            guard input != "exit" else { return }   // 유저가 직접 게임을 종료할 수 있게 함
             
             guard input.count == 3 &&           // 예외처리: 입력 값이 숫자인지, 3자리인지 체크
                     Int(input) != nil else {
@@ -53,7 +81,7 @@ struct BaseballGame {
                 continue
             }
             
-            guard inputArray[0] != 0 else {   // 예외처리: 입력 값 첫 번째가 0인지 체크
+            guard inputArray[0] != 0 else {     // 예외처리: 입력 값 첫 번째가 0인지 체크
                 print("0은 첫 번째 자리에 올 수 없습니다. ")
                 continue
             }
@@ -82,5 +110,7 @@ struct BaseballGame {
                 ball = 0
             }
         }
+        
+        gameStart()
     }
 }
