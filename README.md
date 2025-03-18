@@ -65,3 +65,28 @@ while문을 통해 게임에 지속적인 참여가 가능하도록 구현
 >   - 마지막에 줄바꿈이 돼서 출력됨
 > - [String] 배열을 만들어 게임이 끝날 때 "~~~~~~~"를 append
 >   - **-> 가장 깔끔하게 출력됨**
+
+---
+
+## 🎄파일 구조
+
+```bash
+├── BaseballGame
+│   ├── BaseballGame.swift
+│   └── main.swift
+├── BaseballGame.xcodeproj
+│   ├── project.pbxproj
+│   ├── project.xcworkspace
+│   │   ├── contents.xcworkspacedata
+│   │   ├── xcshareddata
+│   │   │   └── swiftpm
+│   │   │       └── configuration
+│   │   └── xcuserdata
+│   │       └── choegyuhyeon.xcuserdatad
+│   │           └── UserInterfaceState.xcuserstate
+│   └── xcuserdata
+│       └── choegyuhyeon.xcuserdatad
+│           └── xcschemes
+│               └── xcschememanagement.plist
+└── README.md
+```
