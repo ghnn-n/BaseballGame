@@ -28,21 +28,13 @@ struct BaseballGame {
         return correct
     }
     
-    // 중복 값을 입력했는지 확인하는 메서드
-    mutating func checkInput(_ num: [Int]) -> Bool {
-        let numSet = Set(num)                           // 받아온 배열을 Set으로 변환
-        if num.count == numSet.count {                  // Set으로 변환한 배열과 원래 배열의 count를 대조
-            return true                                 // count가 같으면 true를 반환
-        } else {
-            return false
-        }
-    }
-    
     // 게임 시작 전(로비?)
-    mutating func play() {
+    mutating func start() {
         while isSolved {
-            print("원하는 번호를 입력해주세요. \n"
-            + "1. 게임 시작  2. 게임 기록  3. 게임 설명  4. 종료")
+            print("""
+                  원하는 번호를 입력해주세요.
+                  1. 게임 시작  2. 게임 기록  3. 게임 설명  4. 종료
+                  """)
             
             let getNumber = readLine() ?? ""
             
@@ -52,14 +44,17 @@ struct BaseballGame {
                 numberOfGames += 1      // 시작을 누르면 게임 횟수 증가
                 gamePlay()
             case "2":                   // 스코어 출력
+                guard !score.isEmpty else { print("기록이 없습니다. "); continue } // 기록이 없을 경우
                 for i in score {
                     print(i)
                 }
             case "3":                   // 게임 설명
-                print("정답은 0~9까지의 수 중 겹치지 않는 세 자리의 숫자입니다. \n"
-                      + "정답은 0으로 시작할 수 없습니다. \n"
-                      + "입력하신 숫자 중 맞는 숫자는 strike, \n"
-                      + "정답에 포함되긴 하지만 위치가 안 맞는 경우는 ball로 표시합니다. ")
+                print("""
+                    정답은 0~9까지의 수 중 겹치지 않는 세 자리의 숫자입니다.
+                    정답은 0으로 시작할 수 없습니다.
+                    입력하신 숫자 중 맞는 숫자는 strike,
+                    정답에 포함되긴 하지만 위치가 안 맞는 경우는 ball로 표시합니다. 
+                    """)
             case "4":
                 isSolved = false        // 해당 루프문을 탈출
             default:    // 잘못된 값을 입력 시
@@ -73,8 +68,10 @@ struct BaseballGame {
     mutating func gamePlay() {
         let correct = setCorrect()  // 정답 생성
         
-        print("게임을 시작합니다. 세 자리 숫자를 입력하세요. \n"
-              + "게임을 끝내고 싶으시면 [exit]을 입력하세요")
+        print("""
+              게임을 시작합니다. 세 자리 숫자를 입력하세요.
+              게임을 끝내고 싶으시면 [exit]을 입력하세요
+              """)
         
         while !isSolved {           // 유저가 답을 맞추지 못하면(false이면) 반복
             var strike = 0
@@ -98,7 +95,7 @@ struct BaseballGame {
                 continue
             }
             
-            guard checkInput(inputArray) else { // 예외처리: 중복 값이 있는지 체크
+            guard Set(inputArray).count == 3 else { // 예외처리: 중복 값이 있는지 체크
                 print("중복되는 값은 넣을 수 없습니다. ")
                 continue
             }
@@ -126,6 +123,6 @@ struct BaseballGame {
         // 정답을 맞춰서 루프문을 빠져나옴
         score.append("\(numberOfGames)번째 게임: \(numberOfTries)번 시도") // 스코어를 기록
         numberOfTries = 0   // 시도 횟수를 초기화
-        play()              // 로비 재입장
+        start()              // 로비 재입장
     }
 }
