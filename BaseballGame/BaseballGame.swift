@@ -30,6 +30,14 @@ struct BaseballGame {
     
     // 게임 시작 전(로비?)
     mutating func start() {
+        
+        enum GetNumber: String {
+            case start = "1"
+            case history = "2"
+            case info = "3"
+            case quit = "4"
+        }
+        
         while isSolved {
             print("""
                   원하는 번호를 입력해주세요.
@@ -38,24 +46,24 @@ struct BaseballGame {
             
             let getNumber = readLine() ?? ""
             
-            switch getNumber {
-            case "1":
+            switch GetNumber(rawValue: getNumber) {
+            case .start:
                 isSolved = false        // 게임이 시작될 수 있도록 정답 처리를 false로 변경
                 numberOfGames += 1      // 시작을 누르면 게임 횟수 증가
                 gamePlay()
-            case "2":                   // 스코어 출력
+            case .history:                   // 스코어 출력
                 guard !score.isEmpty else { print("기록이 없습니다. "); continue } // 기록이 없을 경우
                 for i in score {
                     print(i)
                 }
-            case "3":                   // 게임 설명
+            case .info:                   // 게임 설명
                 print("""
                     정답은 0~9까지의 수 중 겹치지 않는 세 자리의 숫자입니다.
                     정답은 0으로 시작할 수 없습니다.
                     입력하신 숫자 중 맞는 숫자는 strike,
                     정답에 포함되긴 하지만 위치가 안 맞는 경우는 ball로 표시합니다. 
                     """)
-            case "4":
+            case .quit:
                 isSolved = false        // 해당 루프문을 탈출
             default:    // 잘못된 값을 입력 시
                 print("다시 입력하세요. ")
