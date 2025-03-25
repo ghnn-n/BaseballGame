@@ -13,6 +13,15 @@ struct BaseballGame {
     
     var score: [String] = []    // 게임 기록이 정리되서 할당될 변수
     
+    // 발생할 수 있는 오류 정의
+    enum GameError: Error {
+        case invalidinput
+        case invalidLength
+        case invalidNumber
+        case duplicatedNumber
+        case callExit
+    }
+    
     // 정답을 생성하는 메서드
     mutating func setCorrect() -> [Int] {
         var correct: [Int] = []
@@ -50,7 +59,23 @@ struct BaseballGame {
             case .start:
                 isSolved = false        // 게임이 시작될 수 있도록 정답 처리를 false로 변경
                 numberOfGames += 1      // 시작을 누르면 게임 횟수 증가
-                gamePlay()
+                
+                do {
+                    try gamePlay()
+                } catch GameError.invalidinput {
+                    print("숫자만 입력해주세요. ")
+                } catch GameError.invalidLength {
+                    print("세 자리의 숫자를 입력해주세요. ")
+                } catch GameError.invalidNumber {
+                    print("맨 앞 자리의 숫자는 0이 될 수 없습니다. ")
+                } catch GameError.duplicatedNumber {
+                    print("중복되는 숫자는 입력할 수 없습니다. ")
+                } catch GameError.callExit {
+                    print("게임을 종료합니다. ")
+                } catch {
+                    print("알 수 없는 오류. ")
+                }
+                
             case .history:                   // 스코어 출력
                 guard !score.isEmpty else { print("기록이 없습니다. "); continue } // 기록이 없을 경우
                 for i in score {
@@ -73,7 +98,7 @@ struct BaseballGame {
     }
     
     // 게임 시작
-    mutating func gamePlay() {
+    mutating func gamePlay() throws {
         let correct = setCorrect()  // 정답 생성
         
         print("""
@@ -88,25 +113,21 @@ struct BaseballGame {
             print(correct)              // 테스트를 위해 정답을 알고 시작함(실제 게임에선 주석처리)
             
             let input = readLine() ?? ""    // 유저의 입력값
-            let inputArray: [Int] = input.map { Int(String($0)) ?? 0 }  // 유저의 입력값을 Int 배열로 반환
             
-            guard input != "exit" else { return }   // 유저가 게임 도중 게임을 종료할 수 있게 함
+            // 유저가 게임 도중 게임을 종료할 수 있게 함
+            guard input != "exit" else { throw GameError.callExit }
             
-            guard input.count == 3 &&           // 예외처리: 입력 값이 숫자인지, 3자리인지 체크
-                    Int(input) != nil else {
-                print("3자리의 숫자만 입력하세요. ")
-                continue
+            // 유저의 입력값을 Int 배열로 반환
+            let inputArray: [Int] = try input.map {
+                guard let input = Int(String($0)) else { throw GameError.invalidinput }
+                return input
             }
             
-            guard inputArray[0] != 0 else {     // 예외처리: 입력 값 첫 번째가 0인지 체크
-                print("0은 첫 번째 자리에 올 수 없습니다. ")
-                continue
-            }
+            // 예외처리: 입력 값 첫 번째가 0인지 체크
+            guard inputArray[0] != 0 else { throw GameError.invalidNumber }
             
-            guard Set(inputArray).count == 3 else { // 예외처리: 중복 값이 있는지 체크
-                print("중복되는 값은 넣을 수 없습니다. ")
-                continue
-            }
+            // 예외처리: 중복 값이 있는지 체크
+            guard Set(inputArray).count == 3 else { throw GameError.duplicatedNumber }
             
             for i in 0...2 {
                 if correct[i] == inputArray[i] {            // 같은 위치에 같은 값이 있을 경우
